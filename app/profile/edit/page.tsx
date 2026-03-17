@@ -32,7 +32,7 @@ function EditProfilePage() {
         await updateProfile(formData);
         await refetch();
         toast.success("Profile updated successfully!");
-        router.push("/profile/login-profile");
+        router.push("/profile");
       } catch (error) {
         toast.error("Failed to update profile. Please try again.");
       }
@@ -40,7 +40,7 @@ function EditProfilePage() {
   };
 
   const handleCancel = () => {
-    router.push("/profile/edit");
+    router.push("/profile");
   };
 
   if (isLoading) {
