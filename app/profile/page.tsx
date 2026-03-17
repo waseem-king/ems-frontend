@@ -3,17 +3,25 @@
 import { useProfile } from "@/hooks/useProfile";
 import { motion } from "framer-motion";
 import { User, Mail, ShieldCheck, Briefcase, Globe, Phone } from "lucide-react";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function Profile() {
-  const { data: user, isLoading, isError } = useProfile();
-  // enable edit mode page is read only when edit mode is disabled
-  const [edit , setEdit ] = useState<boolean>(false)
+  const { data: profileResponse, isLoading, isError } = useProfile();
+  const userData = profileResponse?.data;
+  const router = useRouter();
+  const [userType, setUserType] = useState<string | null >("individual")
 
-  const userData = user?.data;
 
-  const imageUrl =
-    "https://plus.unsplash.com/premium_photo-1679339460933-f16fdb43df74?w=500&auto=format&fit=crop&q=60";
+  // get user type from localstorage 
+  useEffect(()=>{
+    const storedUserType = localStorage.getItem("user")
+    setUserType(storedUserType)
+  })
+
+  // userData = profileResponse.data (User type)
+
+  const imageUrl = "https://plus.unsplash.com/premium_photo-1679339460933-f16fdb43df74?w=500&auto=format&fit=crop&q=60";
 
   if (isLoading) {
     return (
@@ -113,7 +121,7 @@ export default function Profile() {
              hover:from-slate-800 hover:to-slate-700 
              border border-white/10
              shadow-[0_10px_30px_rgba(0,0,0,0.5)] transition-all cursor-pointer"
-        onClick={()=>setEdit(true)}
+        onClick={()=> router.push("/profile/edit")}
         >
           Edit Profile
         </motion.button>
@@ -146,3 +154,4 @@ function InfoCard({ icon, label, value, subValue }: any) {
     </div>
   );
 }
+

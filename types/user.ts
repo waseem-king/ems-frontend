@@ -6,10 +6,13 @@ export interface User {
   email: string;
   ownerType: 'user' | 'organization';
   role?: 'ceo' | 'hr' | 'captain' | 'senior' | 'junior';
-  about:string;
+  about?: string;
+  employeeEmail?: string;
   defaultCurrency:string;
   phone?: string;
   occupation?: string;
+  isEmailVerified?: boolean;
+  isActive?: boolean;
   createdAt: string;
 }
 

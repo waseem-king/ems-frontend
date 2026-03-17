@@ -42,7 +42,8 @@ export default function IndividualSignupPage() {
                 // set the success message
                 setStatus({ type: "success", message: "Welcome aboard! Account Redirecting..." })
                 // store token in localstorage 
-                localStorage.setItem("token", response.data.token)
+                console.log("RESPONSE IN LOGIN = ", response)
+                localStorage.setItem("token", response?.accessToken)
                 // after login redirect the user
                 if(userType === "individual"){
                     router.push("/dashboard")

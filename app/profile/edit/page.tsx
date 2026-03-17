@@ -3,7 +3,7 @@
 import { useProfile } from "@/hooks/useProfile";
 import { updateProfile } from "@/services/api/profile-api";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { motion } from "framer-motion";
 import { User, Phone, Briefcase, Mail, Save, Loader2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -14,9 +14,16 @@ import { toast } from "sonner"; // assuming sonner is installed, or use native a
 function EditProfilePage() {
   const router = useRouter();
   const { data: user, isLoading, refetch } = useProfile();
-  const userType = user?.ownerType === "organization" ? "organization" : "individual";
   const [isPending, startTransition] = useTransition();
   const [formData, setFormData] = useState<Partial<UserType>>({});
+   const [userType, setUserType] = useState<string | null >("individual")
+  
+  
+    // get user type from localstorage 
+    useEffect(()=>{
+      const storedUserType = localStorage.getItem("user")
+      setUserType(storedUserType)
+    })
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,7 +40,7 @@ function EditProfilePage() {
   };
 
   const handleCancel = () => {
-    router.push("/profile/login-profile");
+    router.push("/profile/edit");
   };
 
   if (isLoading) {
@@ -47,8 +54,13 @@ function EditProfilePage() {
     );
   }
 
+  const imageUrl = "https://images.unsplash.com/photo-1664044097232-bbff7bf21e10?w=500&auto=format&fit=crop&q=60";
+
+
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-gradient-to-br from-slate-900 via-purple-900/20 to-slate-900">
+    <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-gradient-to-br from-slate-900 via-purple-900/20 to-slate-900 py-10 bg-cover bg-center bg-no-repeat"
+    style={{ backgroundImage: `url(${imageUrl})` }}
+    >
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -70,7 +82,7 @@ function EditProfilePage() {
               <label className="block text-sm font-medium text-slate-300 mb-2">Full Name</label>
               <input
                 type="text"
-                value={formData.name || user?.name || ""}
+                value={formData.name || user?.data?.name || ""}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                 placeholder="Enter your full name"
@@ -82,7 +94,7 @@ function EditProfilePage() {
               <label className="block text-sm font-medium text-slate-300 mb-2">Phone Number</label>
               <input
                 type="tel"
-                value={formData.phone || user?.phone || ""}
+                value={formData.phone || user?.data?.phone || ""}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                 className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                 placeholder="Enter phone number"
@@ -94,7 +106,7 @@ function EditProfilePage() {
             <label className="block text-sm font-medium text-slate-300 mb-2">Occupation</label>
             <input
               type="text"
-              value={formData.occupation || user?.occupation || ""}
+                value={formData.occupation || user?.data?.occupation || ""}
               onChange={(e) => setFormData({ ...formData, occupation: e.target.value })}
               className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
               placeholder="Your occupation"
@@ -107,7 +119,7 @@ function EditProfilePage() {
                 <label className="block text-sm font-medium text-slate-300 mb-2">Employee Email</label>
                 <input
                   type="email"
-                  value={formData.employeeEmail || user?.employeeEmail || ""}
+                value={formData.employeeEmail || user?.data?.employeeEmail || ""}
                   onChange={(e) => setFormData({ ...formData, employeeEmail: e.target.value })}
                   className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                   placeholder="employee@company.com"
@@ -118,7 +130,7 @@ function EditProfilePage() {
                 <div>
                   <label className="block text-sm font-medium text-slate-300 mb-2">Role</label>
                   <select
-                    value={formData.role || user?.role || ""}
+                    value={formData.role || ""}
                     onChange={(e) => setFormData({ ...formData, role: e.target.value as any })}
                     className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                   >
@@ -134,7 +146,7 @@ function EditProfilePage() {
                   <label className="block text-sm font-medium text-slate-300 mb-2">About</label>
                   <textarea
                     rows={4}
-                    value={formData.about || user?.about || ""}
+                    value={formData.about || ""}
                     onChange={(e) => setFormData({ ...formData, about: e.target.value })}
                     className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all resize-vertical"
                     placeholder="Tell us about yourself..."
@@ -170,3 +182,4 @@ function EditProfilePage() {
 }
 
 export default EditProfilePage;
+
