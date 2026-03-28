@@ -3,6 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css"; 
 // Note the curly braces here: { Providers }
 import { Providers } from '@/lib/providers';
+import { Toaster } from "sonner";
+// toaster for showing messages to user anywhere in the app
+
 
 const geistSans = Geist({ 
   variable: "--font-geist-sans", 
@@ -30,6 +33,8 @@ export default function RootLayout({
         {/* Wrapping children in your Providers component */}
         <Providers>
           {children}
+          {/* toaster will be available on every page */}
+          <Toaster position="top-center" richColors/>
         </Providers>
       </body>
     </html>
